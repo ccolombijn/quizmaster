@@ -34,7 +34,7 @@ const model = (function(){
 
          xhr.addEventListener( 'load',  ( event ) => {
            if ( xhr.readyState === 4 && xhr.status === args.status ) {
-             data[args.component] = JSON.parse(event.target.responseText)
+             data[args.endpoint] = JSON.parse(event.target.responseText)
              if(callback) callback( event, args )
            }
          })
