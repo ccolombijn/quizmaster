@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>QuizMaster</title>
+    <link rel="stylesheet" href="application/quizmaster_styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.0/css/all.min.css"  />
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
+  </head>
+  <body>
+    <div class="collapse bg-dark" id="navbarHeader">
+   <div class="container">
+     <div class="row">
+       <div class="col-sm-8 col-md-7 py-4">
+         <h4 class="text-muted">About</h4>
+         <p class="text-muted">Quizmaster is the result of a Personal Case Assignment of Spectrum SE-track. This application is build with a module loader/ UI MVC framework i've developed for the purpose of this assignement</p>
+       </div>
+       <div class="col-sm-4 offset-md-1 py-4">
+         <h4 class="text-white">Contact</h4>
+         <ul class="list-unstyled">
+           <li><a href="#" class="text-white">Follow on Twitter</a></li>
+           <li><a href="#" class="text-white">Like on Facebook</a></li>
+           <li><a href="#" class="text-white">Email me</a></li>
+         </ul>
+       </div>
+     </div>
+   </div>
+ </div>
+ <div class="navbar navbar-dark bg-dark shadow-sm">
+   <div class="container d-flex justify-content-between">
+     <a href="#" class="navbar-brand d-flex align-items-center">
+       <strong>QuizMaster</strong>
+     </a>
+     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+       <span class="navbar-toggler-icon"></span>
+     </button>
+   </div>
+ </div>
+</header>
+
+<main role="main" id="main">
+
+ <section class="jumbotron text-center">
+   <div class="container">
+     <img src="img/3273_-_Brainstorming-512.png" width="125" />
+     <h1 class="jumbotron-heading">Test your Knowledge</h1>
+     <p class="lead text-muted">How much do you know? <a href="#">Play any Quiz available </a> or create one by yourself to share & play with your friends!</p>
+     <p>
+       <a href="#" class="btn btn-primary my-2">Start New Quiz</a>
+       <a href="#" class="btn btn-secondary my-2">Create Profile</a>
+     </p>
+   </div>
+ </section>
+<!--
+ <div class="album py-5 bg-light">
+   <div class="container">
+     <div class="row">
+
+     </div>
+     <div class="row">
+     </div>
+   </div>
+ </div>
+-->
+</main>
+
+<footer class="text-muted">
+
+</footer>
+
+    <!-- templates -->
+    <div id="templates" class="templatesContainer" style="display:none">
+
+      <!-- bsCard -->
+      <div id="bsCard">
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+            <div class="card-body">
+              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                </div>
+                <small class="text-muted">9 mins</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="/docs/4.3/assets/js/vendor/jquery-slim.min.js"><\/script>')</script><script src="https://getbootstrap.com/docs/4.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script>
+    <!-- requireJS
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="application/main"></script>-->
+    <script src="application/assets/tool.js"></script>
+    <script src="application/assets/utils.js"></script>
+    <script src="application/assets/model.js"></script>
+    <script src="application/assets/view.js"></script>
+    <script src="application/assets/controller.js"></script>
+    <script src="application/assets/ui.js"></script>
+    <script src="application/assets/application.js"></script>
+    <script src="application/assets/ui.bootstrap.js"></script>
+    <script src="application/quizmaster.js"></script>
+    <script>application.init(quizmaster)</script>
+
+
+  </body>
+</html>
