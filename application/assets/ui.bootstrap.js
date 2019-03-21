@@ -23,8 +23,9 @@ const bs = (function(){
   before = application.before,
   data = model.data,
   get = model.get
-
-  UI.prototype.bs = function() {
+  console.log(UI)
+  //UI.prototype.bs = function() {
+  UI['bs'] = function(){
     return {
       // UI.bs.button({class:'primary',html:'Button'})
       button : (args) => {
@@ -64,7 +65,7 @@ const bs = (function(){
       modal : (args) =>{
         if( typeof args.class === 'array' ) args.class = args.class.join(' ')
         const modal = tool.make(
-          ['div', { class : `modal${args.class}`, id : args.id, role : 'dialog', 'tab-index' : '-1', ''  },
+          ['div', { class : `modal${args.class}`, id : args.id, role : 'dialog', 'tab-index' : '-1'  },
             [ 'div', { class : 'modal-dialog', role : 'document' },
               [ 'div', { class : 'modal-content' },
                 [ 'div', { class : 'modal-header' }, args.header ],
