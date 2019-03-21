@@ -6,7 +6,7 @@ const quizmaster = (function(){
     api : 'localhost:8081/api',
     components : [
       { endpoint : 'quiz' },
-      { endpoint : 'games' },
+      { endpoint : 'game' },
       { endpoint : 'players' },
       { endpoint : 'questions' },
       { endpoint : 'anwsers' }
