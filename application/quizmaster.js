@@ -8,7 +8,8 @@ const quizmaster = (function(){
       { endpoint : 'quiz' },
       { endpoint : 'games' },
       { endpoint : 'players' },
-      { endpoint : 'questions' }
+      { endpoint : 'questions' },
+      { endpoint : 'anwsers' }
     ]
   },
   //shorthands
