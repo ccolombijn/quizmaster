@@ -26,7 +26,10 @@ const quizmaster = (function(){
   const main = () => {
     const component = 'quiz'
     const start = () => {
-      console.log('start')
+
+      const btnStart = element('btnStart')
+      controller.add( btnStart, 'click', quiz.init )
+
     }
     return {
       label : 'Start',
