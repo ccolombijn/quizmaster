@@ -5,11 +5,11 @@ const quizmaster = (function(){
     default : 'main',
     api : 'localhost:8081/api',
     components : [
-      { endpoint : 'quiz' },
-      { endpoint : 'game' },
-      { endpoint : 'players' },
-      { endpoint : 'questions' },
-      { endpoint : 'anwsers' }
+      //{ endpoint : 'quiz' },
+      //{ endpoint : 'game' },
+      //{ endpoint : 'players' },
+      //{ endpoint : 'questions' },
+      //{ endpoint : 'anwsers' }
     ]
   },
   //shorthands
@@ -29,7 +29,7 @@ const quizmaster = (function(){
     const start = () => {
 
       const btnStart = element('btnStart')
-      controller.add( btnStart, 'click', quiz.init )
+      controller.add( btnStart, 'click', quiz.addPlayer )
 
     }
     return {

@@ -34,14 +34,16 @@ const model = (function(){
 
          xhr.addEventListener( 'load',  ( event ) => {
            if ( xhr.readyState === 4 && xhr.status === args.status ) {
-             data[args.endpoint] = JSON.parse(event.target.responseText)
+             if(args.type === 'GET') data[args.endpoint] = JSON.parse(event.target.responseText)
              if(callback) callback( event, args )
            }
          })
          // xhr.open( args.type, `http://${application.apiBasePath()}${args.component}`, true )
          // console.log(application.apiBasePath())
-         xhr.open( args.type, `http://${args.api}/${args.endpoint}`, true )
-         //xhr.open( args.type, `http://localhost:8081/api/${args.component}`, true )
+         //xhr.open( args.type, `http://${args.api}/${args.endpoint}`, true )
+         xhr.open( args.type, `http://localhost:8081/api/${args.endpoint}`, true )
+         if(args.data) args.data = JSON.stringify(args.data)
+         console.log( args.data)
          xhr.send( args.data )
        }
 

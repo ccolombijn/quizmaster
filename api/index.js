@@ -308,7 +308,7 @@ const api = (function(){
   */
 
     app.delete(`/api/anwsers/:id`, function( req, res ) {
-      let id =+req.params['id']
+      let id =+req.params.id;
 
       connection.query( `DELETE FROM anwsers WHERE id = ?`, [id], ( err, result ) => {
         if (!err) {
@@ -436,7 +436,7 @@ const api = (function(){
       */
 
         app.delete(`/api/game/:id`, function( req, res ) {
-          let id =+req.params['id']
+          let id =+req.params.id;
 
           connection.query( `DELETE FROM game WHERE id = ?`, [id], ( err, result ) => {
             if (!err) {
@@ -486,18 +486,18 @@ const api = (function(){
           * players post
           */
 
-            app.post('/api/players', function(req, res) {
+          app.post('/api/players', function(req, res) {
 
-            let anwser = req.body;
-            connection.query('INSERT INTO players SET ?', anwser, (err, result) => {
+            let player = req.body;
+            connection.query('INSERT INTO players SET ?', player, (err, result) => {
               if (!err) {
                 res.setHeader('Content-Type', 'application/json')
                 connection.query('SELECT * FROM players where id=?', result.insertId, (err, rows) => {
                   if (!err) {
-                    let anwser = rows[0];
-                    if (anwser) {
+                    let player = rows[0];
+                    if (player) {
                       res.setHeader('Content-Type', 'application/json')
-                      res.status(201).end(JSON.stringify(anwser));
+                      res.status(201).end(JSON.stringify(player));
                     } else {
                       res.setHeader('Content-Type', 'application/json')
                       res.status(404).end();
@@ -515,6 +515,20 @@ const api = (function(){
           /* -----------------------------------------------------------------------------
             * players put
           */
+
+          app.delete('/api/players/:id', function( req, res ) {
+            let id =+req.params.id;
+
+            connection.query( `DELETE FROM players WHERE id = ?`, [id], ( err, result ) => {
+              if (!err) {
+                res.status(204).end();
+              } else {
+                  throw err;
+              }
+            })
+          });
+
+
 
           app.put('/api/players/:id', function(req, res) {
 
@@ -560,24 +574,10 @@ const api = (function(){
 
 
 
-          /* -----------------------------------------------------------------------------
-            * anwsers delete
-          */
 
-            app.delete(`/api/anwsers/:id`, function( req, res ) {
-              let id =+req.params['id']
-
-              connection.query( `DELETE FROM anwsers WHERE id = ?`, [id], ( err, result ) => {
-                if (!err) {
-                  res.status(204).end();
-                } else {
-                    throw err;
-                }
-              })
-            })
 
         const server = app.listen(8081, () => {
-          console.log( 'Server listening on port 8081')
+          console.log( 'Server listening on port 8081 en dat is zo!!!')
         })
 
 
