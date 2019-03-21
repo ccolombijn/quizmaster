@@ -64,7 +64,7 @@ const bs = (function(){
       modal : (args) =>{
         if( typeof args.class === 'array' ) args.class = args.class.join(' ')
         const modal = tool.make(
-          ['div', { class : `modal${args.class}`, id : args.id, role : 'dialog', 'tab-index' : '-1', ''  },
+          ['div', { class : `modal${args.class}`, id : args.id, role : 'dialog', 'tab-index' : '-1'  },
             [ 'div', { class : 'modal-dialog', role : 'document' },
               [ 'div', { class : 'modal-content' },
                 [ 'div', { class : 'modal-header' }, args.header ],
