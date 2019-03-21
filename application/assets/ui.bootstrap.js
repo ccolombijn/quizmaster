@@ -23,8 +23,9 @@ const bs = (function(){
   before = application.before,
   data = model.data,
   get = model.get
-
-  UI.prototype.bs = function() {
+  console.log(UI)
+  //UI.prototype.bs = function() {
+  UI['bs'] = function(){
     return {
       // UI.bs.button({class:'primary',html:'Button'})
       button : (args) => {
