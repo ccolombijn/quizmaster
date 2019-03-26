@@ -23,7 +23,17 @@ const api = (function(){
       user: 'root',
       password: 'root',
       database: 'quiz'
-    },routes : [ 'players', 'players/:id', 'game','game/:id','questions','questions/:id','anwsers','anwsers/:id' ]
+    },routes : [
+
+      { route : 'players' }, //setApi.getAll
+      { route : 'players/:id' }, // setApi.getOne
+      { route : 'players/:id', method : 'delete' }, // setApi.delete
+      { route : 'players', method : 'post' }, // setApi.post
+      { route : 'players', method : 'put' }
+
+
+      //'players', 'players/:id', 'game','game/:id','questions','questions/:id','anwsers','anwsers/:id'
+    ]
   }
   const connection = mysql.createConnection( config.db )
   connection.connect((err) => {
@@ -71,89 +81,12 @@ const api = (function(){
       });
     }
 
-  const _get = ( route ) => {
-      route.contains( ':' ) ? getOne( route ) : getAll( route )
+  const _get = ( route ) => route.contains( ':' ) ? getOne( route ) : getAll( route )
 
-  }
+
 
 // .............................................................................
   const _put = (route) => {
-
-  }
-// .............................................................................
-  const _post = (route) => {
-    app.post(`/api/${route}`, function(req, res) {
-
-      let player = req.body;
-      connection.query(`INSERT INTO ${route} SET ?`, player, (err, result) => {
-        if (!err) {
-          res.setHeader('Content-Type', 'application/json')
-          connection.query('SELECT * FROM players where id=?', result.insertId, (err, rows) => {
-            if (!err) {
-              let player = rows[0];
-              if (player) {
-                res.setHeader('Content-Type', 'application/json')
-                res.status(201).end(JSON.stringify(player));
-              } else {
-                res.setHeader('Content-Type', 'application/json')
-                res.status(404).end();
-              }
-            } else {
-              throw err;
-            }
-          });
-        } else {
-          throw err;
-        }
-      });
-    });
-
-  }
-  // .............................................................................
-  const _delete = (route) => {
-
-  }
-
-    return {
-      get : _get,
-      put : _put,
-      post : _post,
-      delete : _delete
-    }
-  }
-
-  // .............................................................................
-  // players
-  /* -----------------------------------------------------------------------------
-    * players get
-    */
-    const api = setApi
-
-
-
-  /* -----------------------------------------------------------------------------
-    * players post
-    */
-
-
-    /* -----------------------------------------------------------------------------
-      * players put
-    */
-
-    app.delete('/api/players/:id', function( req, res ) {
-      let id =+req.params.id;
-
-      connection.query( `DELETE FROM players WHERE id = ?`, [id], ( err, result ) => {
-        if (!err) {
-          res.status(204).end();
-        } else {
-            throw err;
-        }
-      })
-    });
-
-
-
     app.put('/api/players/:id', function(req, res) {
 
           // First read id from params
@@ -194,10 +127,87 @@ const api = (function(){
                 throw err;
               }
         });
-  });
+      });
+
+
+  }
+// .............................................................................
+  const _post = (route) => {
+    app.post(`/api/${route}`, function(req, res) {
+
+      let player = req.body;
+      connection.query(`INSERT INTO ${route} SET ?`, player, (err, result) => {
+        if (!err) {
+          res.setHeader('Content-Type', 'application/json')
+          connection.query('SELECT * FROM players where id=?', result.insertId, (err, rows) => {
+            if (!err) {
+              let player = rows[0];
+              if (player) {
+                res.setHeader('Content-Type', 'application/json')
+                res.status(201).end(JSON.stringify(player));
+              } else {
+                res.setHeader('Content-Type', 'application/json')
+                res.status(404).end();
+              }
+            } else {
+              throw err;
+            }
+          });
+        } else {
+          throw err;
+        }
+      });
+    });
+
+  }
+  // .............................................................................
+  const _delete = (route) => {
+    app.delete('/api/players/:id', function( req, res ) {
+      let id =+req.params.id;
+
+      connection.query( `DELETE FROM players WHERE id = ?`, [id], ( err, result ) => {
+        if (!err) {
+          res.status(204).end();
+        } else {
+            throw err;
+        }
+      })
+    });
+  }
+
+    return {
+      get : _get,
+      put : _put,
+      post : _post,
+      delete : _delete
+    }
+  }
 
 
 
+
+
+
+
+  const api = getApi
+  for( let item of config.routes ){
+    if( item.route.contains(':/id' ) && item.method ){ //delete
+      api.delete( item.route )
+
+    }else if (item.route.contains( ':/id')) { // getOne
+      api.get( item.route )
+
+    }else if (item.method && item.fields ) { // put
+      api.put( item.route, item.fields )
+
+    }else if (item.method  ) { // post
+      api.post( item.route )
+
+    }else { // getAll
+      api.get( item.route )
+
+    }
+  }
 
 
   const server = app.listen(8081, () => {
