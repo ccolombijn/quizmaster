@@ -37,13 +37,15 @@ function apiRequest1( args ){
   xhr.send( args.data )
 }
 
-
-args = {}
-
-let data = {
+const baseUrl =  'http://localhost:8081/api/',
+data = {
   id : 0,
   name : 'test'
 }
+
+r_get = {url : `${baseUrl}players`},
+r_post = {data : data,url : `${baseUrl}players`,method: 'POST',status : 201},
+r_delete = {url : `${baseUrl}players`,method: 'POST',status : 201}
 
 
 function xhr( args ){
@@ -59,16 +61,11 @@ function xhr( args ){
     if(xmlhttp.readyState === 4 && xmlhttp.status === args.status) {
       console.log(event.target.responseText);
     }
-  }
+  });
   xmlhttp.send(args.data);
 
 }
-xhr({
-  data : data,
-  url : 'http://localhost:8081/api/players',
-  method: 'POST',
-  status : 201
-})
-
+t_get = xhr(r_get)
+t_get = xhr(r_post)
 
 //model.apiRequest( {endpoint : 'players', callback : ( event, args) => console.log( event.target.responseText ) })
