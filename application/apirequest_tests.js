@@ -36,17 +36,22 @@ function apiRequest1( args ){
   }*/
   xhr.send( args.data )
 }
-
+let t_response = { response : undefined }
 const baseUrl =  'http://localhost:8081/api/',
 data = {
   id : 0,
   name : 'test'
-}
-
+},
 r_get = {url : `${baseUrl}players`},
+t_get = xhr(r_get),
 r_post = {data : data,url : `${baseUrl}players`,method: 'POST',status : 201},
-r_delete = {url : `${baseUrl}players`,method: 'POST',status : 201}
+t_post = xhr(r_post);
 
+//console.log(t_response)
+//r_delete = {url : `${baseUrl}players`,method: 'DELETE',status : 201},
+//t_delete = xhr(r_delete),
+//r_update = {data : data,url : `${baseUrl}players`,method: 'PUT',status : 201},
+//t_update = xhr(r_update)
 
 function xhr( args ){
   if(typeof args === 'string') args = { url : args }
@@ -59,13 +64,22 @@ function xhr( args ){
   xmlhttp.addEventListener( 'load',  ( event ) => {
   //xmlhttp.onreadystatechange = function(event){
     if(xmlhttp.readyState === 4 && xmlhttp.status === args.status) {
-      console.log(event.target.responseText);
+
+      if( args.method === 'GET') t_res_set(event.target.responseText, t_res );
+      if( ! args.method === 'DELETE') console.log(event.target.responseText);
     }
   });
   xmlhttp.send(args.data);
 
 }
-t_get = xhr(r_get)
-t_get = xhr(r_post)
+function t_res_set( res, callback){
+  t_response.response = res
+  console.log(res)
+}
+
+function t_res(){
+  console.log(t_response)
+}
+
 
 //model.apiRequest( {endpoint : 'players', callback : ( event, args) => console.log( event.target.responseText ) })

@@ -7,6 +7,7 @@ const api = (function(){
   const express = require( 'express' )
   const app = express()
   const bodyParser = require( 'body-parser' )
+  const _ = require( 'lodash' )
 
   app.use( bodyParser.json() )
   app.use( function(req, res, next) {
@@ -22,7 +23,17 @@ const api = (function(){
       user: 'root',
       password: 'root',
       database: 'quiz'
-    }//,routes : [ 'game','game/:id','questions','questions/:id','anwsers','anwsers/:id' ]
+    },routes : [
+
+      { route : 'players' }, //setApi.getAll
+      { route : 'players/:id' }, // setApi.getOne
+      { route : 'players/:id', method : 'delete' }, // setApi.delete
+      { route : 'players', method : 'post' }, // setApi.post
+      { route : 'players', method : 'put', fields : ['name','score'] }
+
+
+      //'players', 'players/:id', 'game','game/:id','questions','questions/:id','anwsers','anwsers/:id'
+    ]
   }
   const connection = mysql.createConnection( config.db )
   connection.connect((err) => {
@@ -34,16 +45,14 @@ const api = (function(){
   });
 
 
-  // .............................................................................
-  // players
-  /* -----------------------------------------------------------------------------
-    * players get
-    */
-      app.get( `/api/players/:id`, function( req, res ) {
+  const setApi= (( args ) => {
+// .............................................................................
+    const getOne = ( route ) => {
+      app.get( `/api/${route}`, function( req, res ) {
 
         let id = +req.params[ 'id' ]
 
-        connection.query(`SELECT * FROM players where id=?`, id, ( err, rows ) => {
+        connection.query(`SELECT * FROM ${route.split('/')[0]} where id=?`, id, ( err, rows ) => {
           if (!err) {
             let record = rows[0];
             res.setHeader('Content-Type', 'application/json')
@@ -54,6 +63,10 @@ const api = (function(){
         })
       });
 
+
+    }
+
+    const getAll = ( route ) => {
       app.get(`/api/players`, function(req, res) {
 
         res.setHeader('Content-Type', 'application/json')
@@ -66,64 +79,27 @@ const api = (function(){
           }
         })
       });
+    }
 
-  /* -----------------------------------------------------------------------------
-    * players post
-    */
-
-    app.post('/api/players', function(req, res) {
-
-      let player = req.body;
-      connection.query('INSERT INTO players SET ?', player, (err, result) => {
-        if (!err) {
-          res.setHeader('Content-Type', 'application/json')
-          connection.query('SELECT * FROM players where id=?', result.insertId, (err, rows) => {
-            if (!err) {
-              let player = rows[0];
-              if (player) {
-                res.setHeader('Content-Type', 'application/json')
-                res.status(201).end(JSON.stringify(player));
-              } else {
-                res.setHeader('Content-Type', 'application/json')
-                res.status(404).end();
-              }
-            } else {
-              throw err;
-            }
-          });
-        } else {
-          throw err;
-        }
-      });
-    });
-
-    /* -----------------------------------------------------------------------------
-      * players put
-    */
-
-    app.delete('/api/players/:id', function( req, res ) {
-      let id =+req.params.id;
-
-      connection.query( `DELETE FROM players WHERE id = ?`, [id], ( err, result ) => {
-        if (!err) {
-          res.status(204).end();
-        } else {
-            throw err;
-        }
-      })
-    });
+  const _get = ( route ) => {
+    route.includes( '/:id' ) ? getOne( route ) : getAll( route )
+  }
 
 
-
-    app.put('/api/players/:id', function(req, res) {
+// .............................................................................
+  const _put = (route, fields) => {
+    app.put(`/api/${route}/:id`, function(req, res) {
 
           // First read id from params
           let id = +req.params.id
           let body = req.body;
-
+          let query = 'UPDATE players SET '
+          for( let field of fields){
+            query =+ ''
+          }
 
           connection.query(
-            'UPDATE players SET score=? Where id = ?',
+            query,
             [body.anwser, id],
             (err, result) => {
               if (!err) {
@@ -155,10 +131,94 @@ const api = (function(){
                 throw err;
               }
         });
-  });
+      });
+
+
+  }
+// .............................................................................
+  const _post = (route) => {
+    app.post(`/api/${route}`, function(req, res) {
+
+      let player = req.body;
+      connection.query(`INSERT INTO ${route} SET ?`, player, (err, result) => {
+        if (!err) {
+          res.setHeader('Content-Type', 'application/json')
+          connection.query('SELECT * FROM players where id=?', result.insertId, (err, rows) => {
+            if (!err) {
+              let player = rows[0];
+              if (player) {
+                res.setHeader('Content-Type', 'application/json')
+                res.status(201).end(JSON.stringify(player));
+              } else {
+                res.setHeader('Content-Type', 'application/json')
+                res.status(404).end();
+              }
+            } else {
+              throw err;
+            }
+          });
+        } else {
+          throw err;
+        }
+      });
+    });
+
+  }
+  // .............................................................................
+  const _delete = (route) => {
+    app.delete('/api/players/:id', function( req, res ) {
+      let id =+req.params.id;
+
+      connection.query( `DELETE FROM players WHERE id = ?`, [id], ( err, result ) => {
+        if (!err) {
+          res.status(204).end();
+        } else {
+            throw err;
+        }
+      })
+    });
+  }
+
+    return {
+      get : _get,
+      put : _put,
+      post : _post,
+      delete : _delete
+    }
+  })()
 
 
 
+
+
+
+
+  const api = setApi
+  for( let item of config.routes ){
+
+    if(  item.route.split(':')[1] && item.method ){ //delete
+      console.log(`${item.route.split('/')[0]} delete`)
+      setApi.delete( item.route )
+
+    }else if ( item.route.split(':')[1]) { // getOne
+      console.log(`${item.route.split('/')[0]} getOne`)
+      setApi.get( item.route )
+
+    }else if (item.method && item.fields ) { // put
+      console.log(`${item.route} put`)
+      setApi.put( item.route, item.fields )
+
+    }else if (item.method  ) { // post
+      console.log(`${item.route} post`)
+      setApi.post( item.route )
+
+    }else { // getAll
+      console.log(`${item.route} getAll`)
+      setApi.get( item.route )
+
+    }
+
+  }
 
 
   const server = app.listen(8081, () => {
