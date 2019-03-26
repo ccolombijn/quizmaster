@@ -41,7 +41,7 @@ const bs = (function(){
       },
       //UI.bs.grid([{'md-6':'column 1'},{'md-6':'column 2'}])
       grid : (args) => {
-        const grid = create( 'div', 'container', args ),
+        const grid = create( 'div', 'container' ),
         rows = args.rows
         for( let gridRow of rows){
           let row = create( 'div', 'row' )
