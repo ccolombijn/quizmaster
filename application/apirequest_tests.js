@@ -47,12 +47,15 @@ let data = {
 
 
 function xhr( args ){
-
-  const xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
+  if(typeof args === 'string') args = { url : args }
+  const xmlhttp = new XMLHttpRequest();
+  if( !args.method ) args[ 'method' ] = 'GET'
+  if( !args.status ) args[ 'status' ] = 200
   xmlhttp.open( args.method, args.url, true );
   xmlhttp.setRequestHeader("Content-Type", "application/json");
   if(args.data) args.data = JSON.stringify(args.data)
-  xmlhttp.onreadystatechange = function(event){
+  xmlhttp.addEventListener( 'load',  ( event ) => {
+  //xmlhttp.onreadystatechange = function(event){
     if(xmlhttp.readyState === 4 && xmlhttp.status === args.status) {
       console.log(event.target.responseText);
     }
