@@ -28,21 +28,31 @@ const model = (function(){
 
        apiRequest = ( args, callback ) => {
 
-         let xhr = new XMLHttpRequest()
          if( !args.type ) args[ 'type' ] = 'GET'
          if( !args.status ) args[ 'status' ] = 200
+         if( !args.server ) args[ 'server' ] = 'http://localhost:8081'
+         if( !args.api ) args[ 'api'] = 'api'
 
-         xhr.addEventListener( 'load',  ( event ) => {
-           if ( xhr.readyState === 4 && xhr.status === args.status ) {
-             data[args.endpoint] = JSON.parse(event.target.responseText)
-             if(callback) callback( event, args )
-           }
-         })
-         // xhr.open( args.type, `http://${application.apiBasePath()}${args.component}`, true )
-         // console.log(application.apiBasePath())
-         xhr.open( args.type, `http://${args.api}/${args.endpoint}`, true )
-         //xhr.open( args.type, `http://localhost:8081/api/${args.component}`, true )
-         xhr.send( args.data )
+         const xmlhttp = new XMLHttpRequest();
+         xmlhttp.open( args.method, `${args.server}/${args.api}/${args.endpoint}`, true);
+         xmlhttp.setRequestHeader( 'Content-Type', 'application/json' );
+
+         if( args.data ) args.data = JSON.stringify( args.data );
+
+         xmlhttp.onreadystatechange = function(event){
+           if(xmlhttp.readyState === 4 && xmlhttp.status === args.status) {
+            switch (args.method) {
+              case 'GET':
+                data[args.endpoint] = JSON.parse(event.target)
+                break;
+              default:
+
+              }
+            }
+
+           if( args.callback ) args.callback( event, args )
+         }
+         xmlhttp.send( args.data );
        }
 
   //...........................................................................

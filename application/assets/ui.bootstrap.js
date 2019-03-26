@@ -23,7 +23,6 @@ const bs = (function(){
   before = application.before,
   data = model.data,
   get = model.get
-  console.log(UI)
   //UI.prototype.bs = function() {
   UI['bs'] = function(){
     return {
