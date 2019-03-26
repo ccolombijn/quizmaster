@@ -29,7 +29,7 @@ const api = (function(){
       { route : 'players/:id' }, // setApi.getOne
       { route : 'players/:id', method : 'delete' }, // setApi.delete
       { route : 'players', method : 'post' }, // setApi.post
-      { route : 'players', method : 'put' }
+      { route : 'players', method : 'put', fields : [] }
 
 
       //'players', 'players/:id', 'game','game/:id','questions','questions/:id','anwsers','anwsers/:id'
@@ -45,7 +45,7 @@ const api = (function(){
   });
 
 
-  const setApi= ( args ) => {
+  const setApi= (( args ) => {
 // .............................................................................
     const getOne = ( route ) => {
       app.get( `/api/${route}`, function( req, res ) {
@@ -81,8 +81,9 @@ const api = (function(){
       });
     }
 
-  const _get = ( route ) => route.contains( ':' ) ? getOne( route ) : getAll( route )
-
+  const _get = ( route ) => {
+    route.includes( '/:id' ) ? getOne( route ) : getAll( route )
+  }
 
 
 // .............................................................................
@@ -181,7 +182,7 @@ const api = (function(){
       post : _post,
       delete : _delete
     }
-  }
+  })()
 
 
 
@@ -189,24 +190,31 @@ const api = (function(){
 
 
 
-  const api = getApi
+  const api = setApi
   for( let item of config.routes ){
-    if( item.route.contains(':/id' ) && item.method ){ //delete
-      api.delete( item.route )
 
-    }else if (item.route.contains( ':/id')) { // getOne
-      api.get( item.route )
+    if(  item.route.split(':')[1] && item.method ){ //delete
+      console.log('delete')
+      setApi.delete( item.route )
+
+    }else if ( item.route.split(':')[1]) { // getOne
+      console.log('getOne')
+      setApi.get( item.route )
 
     }else if (item.method && item.fields ) { // put
-      api.put( item.route, item.fields )
+      console.log('put')
+      setApi.put( item.route, item.fields )
 
     }else if (item.method  ) { // post
-      api.post( item.route )
+      console.log('post')
+      setApi.post( item.route )
 
     }else { // getAll
-      api.get( item.route )
+      console.log('getAll')
+      setApi.get( item.route )
 
     }
+
   }
 
 
