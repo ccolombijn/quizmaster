@@ -194,23 +194,23 @@ const api = (function(){
   for( let item of config.routes ){
 
     if(  item.route.split(':')[1] && item.method ){ //delete
-      console.log('delete')
+      console.log(`${item.route.split('/')[0]} delete`)
       setApi.delete( item.route )
 
     }else if ( item.route.split(':')[1]) { // getOne
-      console.log('getOne')
+      console.log(`${item.route.split('/')[0]} getOne`)
       setApi.get( item.route )
 
     }else if (item.method && item.fields ) { // put
-      console.log('put')
+      console.log(`${item.route} put`)
       setApi.put( item.route, item.fields )
 
     }else if (item.method  ) { // post
-      console.log('post')
+      console.log(`${item.route} post`)
       setApi.post( item.route )
 
     }else { // getAll
-      console.log('getAll')
+      console.log(`${item.route} getAll`)
       setApi.get( item.route )
 
     }
