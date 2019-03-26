@@ -29,7 +29,7 @@ const api = (function(){
       { route : 'players/:id' }, // setApi.getOne
       { route : 'players/:id', method : 'delete' }, // setApi.delete
       { route : 'players', method : 'post' }, // setApi.post
-      { route : 'players', method : 'put', fields : [] }
+      { route : 'players', method : 'put', fields : ['name','score'] }
 
 
       //'players', 'players/:id', 'game','game/:id','questions','questions/:id','anwsers','anwsers/:id'
@@ -87,16 +87,19 @@ const api = (function(){
 
 
 // .............................................................................
-  const _put = (route) => {
-    app.put('/api/players/:id', function(req, res) {
+  const _put = (route, fields) => {
+    app.put(`/api/${route}/:id`, function(req, res) {
 
           // First read id from params
           let id = +req.params.id
           let body = req.body;
-
+          let query = 'UPDATE players SET '
+          for( let field of fields){
+            query =+ ''
+          }
 
           connection.query(
-            'UPDATE players SET score=? Where id = ?',
+            query,
             [body.anwser, id],
             (err, result) => {
               if (!err) {
