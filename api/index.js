@@ -7,6 +7,7 @@ const api = (function(){
   const express = require( 'express' )
   const app = express()
   const bodyParser = require( 'body-parser' )
+  const _ = require( 'lodash' )
 
   app.use( bodyParser.json() )
   app.use( function(req, res, next) {
@@ -22,7 +23,7 @@ const api = (function(){
       user: 'root',
       password: 'root',
       database: 'quiz'
-    }//,routes : [ 'game','game/:id','questions','questions/:id','anwsers','anwsers/:id' ]
+    },routes : [ 'players', 'players/:id', 'game','game/:id','questions','questions/:id','anwsers','anwsers/:id' ]
   }
   const connection = mysql.createConnection( config.db )
   connection.connect((err) => {
@@ -34,16 +35,14 @@ const api = (function(){
   });
 
 
-  // .............................................................................
-  // players
-  /* -----------------------------------------------------------------------------
-    * players get
-    */
-      app.get( `/api/players/:id`, function( req, res ) {
+  const setApi= ( args ) => {
+// .............................................................................
+    const getOne = ( route ) => {
+      app.get( `/api/${route}`, function( req, res ) {
 
         let id = +req.params[ 'id' ]
 
-        connection.query(`SELECT * FROM players where id=?`, id, ( err, rows ) => {
+        connection.query(`SELECT * FROM ${route.split('/')[0]} where id=?`, id, ( err, rows ) => {
           if (!err) {
             let record = rows[0];
             res.setHeader('Content-Type', 'application/json')
@@ -54,6 +53,10 @@ const api = (function(){
         })
       });
 
+
+    }
+
+    const getAll = ( route ) => {
       app.get(`/api/players`, function(req, res) {
 
         res.setHeader('Content-Type', 'application/json')
@@ -66,15 +69,23 @@ const api = (function(){
           }
         })
       });
+    }
 
-  /* -----------------------------------------------------------------------------
-    * players post
-    */
+  const _get = ( route ) => {
+      route.contains( ':' ) ? getOne( route ) : getAll( route )
 
-    app.post('/api/players', function(req, res) {
+  }
+
+// .............................................................................
+  const _put = (route) => {
+
+  }
+// .............................................................................
+  const _post = (route) => {
+    app.post(`/api/${route}`, function(req, res) {
 
       let player = req.body;
-      connection.query('INSERT INTO players SET ?', player, (err, result) => {
+      connection.query(`INSERT INTO ${route} SET ?`, player, (err, result) => {
         if (!err) {
           res.setHeader('Content-Type', 'application/json')
           connection.query('SELECT * FROM players where id=?', result.insertId, (err, rows) => {
@@ -96,6 +107,34 @@ const api = (function(){
         }
       });
     });
+
+  }
+  // .............................................................................
+  const _delete = (route) => {
+
+  }
+
+    return {
+      get : _get,
+      put : _put,
+      post : _post,
+      delete : _delete
+    }
+  }
+
+  // .............................................................................
+  // players
+  /* -----------------------------------------------------------------------------
+    * players get
+    */
+    const api = setApi
+
+
+
+  /* -----------------------------------------------------------------------------
+    * players post
+    */
+
 
     /* -----------------------------------------------------------------------------
       * players put
