@@ -62,18 +62,47 @@ const bs = (function(){
       },
       // UI.bs.modal()
       modal : (args) =>{
-        if( typeof args.class === 'array' ) args.class = args.class.join(' ')
-        const modal = tool.make(
-          ['div', { class : `modal${args.class}`, id : args.id, role : 'dialog', 'tab-index' : '-1'  },
-            [ 'div', { class : 'modal-dialog', role : 'document' },
-              [ 'div', { class : 'modal-content' },
-                [ 'div', { class : 'modal-header' }, args.header ],
-                [ 'div', { class : 'modal-body' }, args.body ],
-                [ 'div', { class : 'modal-body' }, args.footer ]
+          if( typeof args.class === 'array' ) args.class = args.class.join(' ')
+        const modalHeader = (() => {
+          if(typeof args.header === 'object'){
+
+          }else{
+            tool.make( [ 'div', { class : 'modal-header' }, args.header ] );
+          }
+
+        })()
+
+        const modalBody = tool.make( [ 'div', {
+          class : 'modal-body' }, args.body ] );
+
+        const modalFooter = tool.make( [ 'div', {
+          class : 'modal-footer' }, args.footer ] );
+
+        if( args.primaryBtn ) {
+          const primaryBtn = UI.bs.button({
+            id : args.primaryBtn.id,
+            class : 'primary',
+            html : args.primaryBtn.html
+          })
+        }
+        const modal = tool.make( ['div', {
+          class : `modal${args.class}`,
+          id : args.id,
+          role : 'dialog', 'tab-index' : '-1', ''
+          }, [ 'div', {
+            class : 'modal-dialog', role : 'document' },
+              [ 'div', {
+                class : 'modal-content' },
+                modalHeader, modalBody, modalFooter
               ]
             ]
           ]
         );
+        if( args.controller && primaryBtn ){
+          const btnController = args.controller.primaryBtn 
+          ? args.controller.primaryBtn : args.controller
+          controller.add( primaryBtn, 'click', btnController )
+        }
         const show = (modal) => {
           if(jQuery){
 
@@ -81,7 +110,13 @@ const bs = (function(){
             console.error('UI.bs.modal.show() requires jQuery')
           }
         }
-        return modal
+        if(args){
+          return modal
+        }else{
+          return {
+            show : show
+          }
+        }
       }
 
     }
