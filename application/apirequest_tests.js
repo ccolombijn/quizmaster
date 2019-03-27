@@ -1,48 +1,11 @@
 
-function apiRequest0( args){
-  const xhr = new XMLHttpRequest()
-  if( !args.type ) args[ 'type' ] = 'GET'
-  if( !args.status ) args[ 'status' ] = 200
-
-  xhr.addEventListener( 'load',  ( event ) => {
-    if ( xhr.readyState === 4 && xhr.status === args.status ) {
-      if(args.type === 'GET') data[args.endpoint] = JSON.parse(event.target.responseText)
-      if(args.callback) args.callback( event, args )
-    }
-  })
-  // xhr.open( args.type, `http://${application.apiBasePath()}${args.component}`, true )
-  // console.log(application.apiBasePath())
-  //xhr.open( args.type, `http://${args.api}/${args.endpoint}`, true )
-  xhr.open( args.type, `http://localhost:8081/api/${args.endpoint}`, true )
-  if(args.data){
-    args.data = JSON.stringify(args.data)
-    console.log( args.data)
-    xhr.send( args.data )
-  }
-}
-
-
-function apiRequest1( args ){
-  const xhr = new XMLHttpRequest()
-  if( !args.method ) args[ 'type' ] = 'GET'
-  if( !args.status ) args[ 'status' ] = 200
-  xhr.open(args.type, `http://localhost:8081/api/${args.endpoint}`);
-  if( args.method === 'POST' ) xhr.setRequestHeader("Content-Type", "application/json");
-  /*xhr.onreadystatechange = function( event ){
-    if(xhr.readyState === 4 && xhr.status === args.status) {
-      if(args.method === 'GET') data[args.endpoint] = JSON.parse(xhr.responseText)
-    }
-    if(args.callback) args.callback( event )
-  }*/
-  xhr.send( args.data )
-}
 let t_response = { response : undefined }
 const baseUrl =  'http://localhost:8081/api/',
 data = {
   id : 0,
   name : 'test'
 },
-r_get = {url : `${baseUrl}players`},
+r_get = {url : `${baseUrl}players`, callback : t_res },
 t_get = xhr(r_get),
 r_post = {data : data,url : `${baseUrl}players`,method: 'POST',status : 201},
 t_post = xhr(r_post);
@@ -53,6 +16,11 @@ t_post = xhr(r_post);
 //r_update = {data : data,url : `${baseUrl}players`,method: 'PUT',status : 201},
 //t_update = xhr(r_update)
 
+function t_res( event ){
+  t_response.response = event.target.responseText
+  console.log(event)
+}
+
 function xhr( args ){
   if(typeof args === 'string') args = { url : args }
   const xmlhttp = new XMLHttpRequest();
@@ -62,24 +30,50 @@ function xhr( args ){
   xmlhttp.setRequestHeader("Content-Type", "application/json");
   if(args.data) args.data = JSON.stringify(args.data)
   xmlhttp.addEventListener( 'load',  ( event ) => {
-  //xmlhttp.onreadystatechange = function(event){
     if(xmlhttp.readyState === 4 && xmlhttp.status === args.status) {
-
-      if( args.method === 'GET') t_res_set(event.target.responseText, t_res );
-      if( ! args.method === 'DELETE') console.log(event.target.responseText);
+      if(args.callback) args.callback(event)
     }
   });
   xmlhttp.send(args.data);
 
 }
-function t_res_set( res, callback){
-  t_response.response = res
-  console.log(res)
+
+const request = {}
+const config = {
+  server : 'localhost:8081',
+  api : 'api'
+  routes : [
+    { 
+      endpoint : 'players', 
+      key : 'id', 
+      methods : [ 'post','get','put','delete' ], 
+      fields : [ 'name','score' ]
+    }
+  ]
 }
 
-function t_res(){
-  console.log(t_response)
+const apiRoutes = ( config ) => {
+  const url = `http://${config.server}/${config.api}/`
+  for( let item of config.routes) {
+    request[item.endpoint] = {}
+    let args
+    for(let method of item.methods){
+      switch(method){
+        case 'post' : 
+          // request.players.post(args)
+          request[item.endpoint][method] = (args)=> {
+            args = { url : `${url}${item.endpoint}`, data : args.data,method: 'POST',status : 201, callback : args.callback}
+            
+            xhr(args)
+          }
+          break;
+        case 'get' : 
+          args = { url : `${url}${item.endpoint}`}
+          break;
+         
+      }
+    }
+  }
 }
-
 
 //model.apiRequest( {endpoint : 'players', callback : ( event, args) => console.log( event.target.responseText ) })
