@@ -1,6 +1,7 @@
 // model
 const model = (function(){
  const data = {},
+       xhr = tool.xhr,
        components = [],
        load = (args) => {
          model.components = args.components
@@ -66,6 +67,34 @@ const model = (function(){
            }
          });
          xmlhttp.send(args.data);
+       },
+       request = {},
+       apiRoutes = ( config ) => {
+         const url = `http://${config.server}/${config.api}/`
+         for( let item of config.routes) {
+           request[item.endpoint] = {}
+           let args
+           for(let method of item.methods){
+             switch(method){
+               case 'post' :
+                 // request.[route].[method](args)
+                 request[item.endpoint][method] = (args)=> {
+                   args = { url : `${url}${item.endpoint}`, data : args.data,method: 'POST',status : 201, callback : args.callback}
+
+                   xhr(args)
+                 }
+                 break;
+               case 'get' :
+                 request[item.endpoint][method] = (args)=> {
+                   args = { url : `${url}${item.endpoint}/${args.id}`, callback : args.callback}
+
+                   xhr(args)
+                 }
+                 break;
+
+             }
+           }
+         }
        }
 
   //...........................................................................
@@ -75,6 +104,8 @@ const model = (function(){
    components : components,
    get : get,
    load : load,
-   apiRequest : apiRequest
+   apiRequest : request,
+   apiRoutes : apiRoutes
+
  }
 })()
