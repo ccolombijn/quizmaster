@@ -68,7 +68,11 @@ const apiRoutes = ( config ) => {
           }
           break;
         case 'get' : 
-          args = { url : `${url}${item.endpoint}`}
+          request[item.endpoint][method] = (args)=> {
+            args = { url : `${url}${item.endpoint}/${args.id}`, callback : args.callback}
+            
+            xhr(args)
+          }
           break;
          
       }
