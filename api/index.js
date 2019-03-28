@@ -17,8 +17,8 @@ const api = (function(){
     next()
   })
   // config
-  const config = process.argv[3]
-  ? fs.readFile( `${process.argv[3]}.json`, (err, data)=>JSON.parse(data))
+  const config = process.argv[2]
+  ? JSON.parse(fs.readFileSync(`./api/${process.argv[2]}.json`, 'utf8'))
   : {
     db : {
       host: 'localhost',
@@ -34,7 +34,7 @@ const api = (function(){
       { route : 'players', method : 'post' }, // set.post
       { route : 'players/:id', method : 'put', fields : ['name','score'] }*/  // set.put
       { route : 'players',
-        methods : [ 'get', 'delete', 'post', 'put' ],
+        methods : [ 'get','getAll', 'delete', 'post', 'put' ],
         key : 'id',
         fields : ['name','score']
       }
@@ -184,6 +184,7 @@ const api = (function(){
 
   return {
     get : _get,
+    getAll : getAll,
     put : _put,
     post : _post,
     delete : _delete
@@ -218,7 +219,7 @@ const setRoutes = (function(){
   for( let item of config.routes ){
     //setMethod( item )
     for( let method of item.methods) {
-      
+
       let fields = ( method === 'put') ? ' '+item.fields.join(',') : ''
 
       let route = ( method === 'get' || method === 'delete' || method === 'put' )
